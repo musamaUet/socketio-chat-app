@@ -1,0 +1,22 @@
+{
+	"name": "socketio-chat-app",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"scripts": {
+		"start": "nodemon backend/server"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/musamarabbani/sockio-mern-app.git"
+	},
+	"author": "Muhammad Usama Rabani",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/musamarabbani/sockio-mern-app/issues"
+	},
+	"homepage": "https://github.com/musamarabbani/sockio-mern-app#readme",
+	"dependencies": {
+		"express": "^4.18.1"
+	}
+}

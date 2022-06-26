@@ -1,11 +1,22 @@
 import React from 'react';
-import { Container, Box, Text } from '@chakra-ui/react';
+import {
+	Container,
+	Box,
+	Text,
+	Tab,
+	Tabs,
+	TabList,
+	TabPanel,
+	TabPanels,
+} from '@chakra-ui/react';
+import Login from '../components/Authentication/Login';
+import SignUp from '../components/Authentication/SignUp';
 
 const HomePage = () => {
 	return (
 		<Container maxW='xl'>
 			<Box
-				d='flex'
+				display='flex'
 				justifyContent='center'
 				w='100%'
 				p={3}
@@ -18,7 +29,22 @@ const HomePage = () => {
 					Talk A Tive
 				</Text>
 			</Box>
-			<Box w='100%' p={4} bg='white' borderRadius='lg' borderWidth='1px'></Box>
+			<Box w='100%' p={4} bg='white' borderRadius='lg' borderWidth='1px'>
+				<Tabs variant='soft-rounded' w='100%'>
+					<TabList>
+						<Tab width='50%'>Login</Tab>
+						<Tab width='50%'>SignUp</Tab>
+					</TabList>
+					<TabPanels>
+						<TabPanel>
+							<Login />
+						</TabPanel>
+						<TabPanel>
+							<SignUp />
+						</TabPanel>
+					</TabPanels>
+				</Tabs>
+			</Box>
 		</Container>
 	);
 };

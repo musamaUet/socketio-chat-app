@@ -15,8 +15,6 @@ const Login = () => {
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const postDetails = (file) => {};
-
 	const submitHandler = () => {};
 
 	return (

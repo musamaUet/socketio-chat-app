@@ -8,14 +8,48 @@ import {
 	InputRightElement,
 	Button,
 } from '@chakra-ui/react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useCustomToast } from '../../hooks/showToast';
 
 const Login = () => {
+	const navigate = useNavigate();
+	const { customToast } = useCustomToast();
+
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [loading, setLoading] = useState(false);
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const submitHandler = () => {};
+	const submitHandler = async () => {
+		if (!email || !password) {
+			customToast({
+				title: 'Please Fill all the Feilds',
+				status: 'warning',
+			});
+			setLoading(false);
+			return;
+		}
+
+		try {
+			const { data } = await axios.post('/api/user/login', { email, password });
+			customToast({
+				title: 'Login Successful',
+				status: 'success',
+			});
+			localStorage.setItem('userInfo', JSON.stringify(data));
+			setLoading(false);
+			navigate('/chats');
+		} catch (error) {
+			customToast({
+				title: 'Error Occured!',
+				description: error.response.data.message,
+				status: 'error',
+			});
+			setLoading(false);
+		}
+	};
 
 	return (
 		<VStack spacing='5px'>
@@ -50,7 +84,7 @@ const Login = () => {
 				width='100%'
 				style={{ marginTop: 15 }}
 				onClick={submitHandler}
-				// isLoading={picLoading}
+				isLoading={loading}
 			>
 				Login
 			</Button>
@@ -59,8 +93,11 @@ const Login = () => {
 				colorScheme='red'
 				width='100%'
 				style={{ marginTop: 15 }}
-				onClick={submitHandler}
-				// isLoading={picLoading}
+				onClick={() => {
+					setEmail('guest@example.com');
+					setPassword('123456');
+				}}
+				isLoading={loading}
 			>
 				Login with Guest User
 			</Button>

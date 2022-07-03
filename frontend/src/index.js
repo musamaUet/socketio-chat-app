@@ -2,20 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
-import './Interceptor';
-import App from './App';
-
+import { enableES5 } from 'immer';
+import { Provider } from 'react-redux';
 import reportWebVitals from './reportWebVitals';
+
+import App from './App';
+import store from './redux/store';
+
+import './Interceptor';
+
+enableES5();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-	<React.StrictMode>
+	<Provider store={store}>
 		<ChakraProvider>
 			<BrowserRouter>
 				<App />
 			</BrowserRouter>
 		</ChakraProvider>
-	</React.StrictMode>
+	</Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

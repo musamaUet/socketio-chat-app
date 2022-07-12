@@ -7,15 +7,11 @@ import history from '../utils/history';
 import rootReducer from './reducers';
 import rootSaga from './sagas';
 
-// const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware();
 
-// const middlewares = [sagaMiddleware, routerMiddleware(history)];
+const middlewares = [sagaMiddleware, routerMiddleware(history)];
 
-// const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = createStore(rootReducer(), applyMiddleware(thunk));
 
 // sagaMiddleware.run(rootSaga);
-// export default store;
-
-export default function configureStore(initialState = {}) {
-	return createStore(rootReducer, initialState, applyMiddleware(thunk));
-}
+export default store;

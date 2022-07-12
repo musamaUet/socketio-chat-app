@@ -42,7 +42,6 @@ const Login = () => {
 				title: 'Login Successful',
 				status: 'success',
 			});
-			debugger;
 			localStorage.setItem('userInfo', JSON.stringify(data));
 			dispatch(setUserInfo(data));
 			setLoading(false);

@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ChatPage from './pages/ChatPage';
 import HomePage from './pages/HomePage';
+import { useDispatch } from 'react-redux';
+import { setUserInfo } from './redux/actions';
 import './App.css';
 
 const App = () => {
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		const user = localStorage.getItem('userInfo');
+		if (user) {
+			dispatch(setUserInfo(user));
+		}
+	}, []);
+
 	return (
 		<div className='App'>
 			<Routes>

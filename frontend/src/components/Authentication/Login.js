@@ -10,10 +10,14 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUserInfo } from '../../redux/actions';
 import { useCustomToast } from '../../hooks/showToast';
 
 const Login = () => {
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
 	const { customToast } = useCustomToast();
 
 	const [email, setEmail] = useState('');
@@ -38,7 +42,9 @@ const Login = () => {
 				title: 'Login Successful',
 				status: 'success',
 			});
+			debugger;
 			localStorage.setItem('userInfo', JSON.stringify(data));
+			dispatch(setUserInfo(data));
 			setLoading(false);
 			navigate('/chats');
 		} catch (error) {

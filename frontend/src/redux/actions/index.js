@@ -1,1 +1,1 @@
-export { getUserInfo } from './user.action';
+export { setUserInfo } from './user.action';

@@ -1,6 +1,7 @@
-import { createStore, applyMiddleware } from 'redux';
+import { legacy_createStore as createStore, applyMiddleware } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
+import thunk from 'redux-thunk';
 
 import history from '../utils/history';
 import rootReducer from './reducers';
@@ -10,7 +11,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const middlewares = [sagaMiddleware, routerMiddleware(history)];
 
-const store = createStore(rootReducer, applyMiddleware(...middlewares));
+const store = createStore(rootReducer(), applyMiddleware(thunk));
 
-sagaMiddleware.run(rootSaga);
+// sagaMiddleware.run(rootSaga);
 export default store;

@@ -5,11 +5,10 @@ import { combineReducers } from 'redux';
 import history from '../../utils/history';
 import { userReducer } from './user.reducers';
 
-export default function createReducer(injectedReducers = {}) {
+export default function createReducer() {
 	const rootReducer = combineReducers({
 		router: connectRouter(history),
 		user: userReducer,
-		...injectedReducers,
 	});
 
 	return rootReducer;

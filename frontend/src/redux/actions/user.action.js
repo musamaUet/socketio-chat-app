@@ -1,8 +1,9 @@
-import { GET_USER_INFO } from '../types';
+import { SET_USER_INFO } from '../types';
 
-export const getUserInfo = (userInfo) => {
-	return {
-		type: GET_USER_INFO,
+export const setUserInfo = (userInfo) => (dispatch) => {
+	console.log('action called', userInfo, SET_USER_INFO);
+	dispatch({
+		type: SET_USER_INFO,
 		payload: userInfo,
-	};
+	});
 };

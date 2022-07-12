@@ -9,3 +9,4 @@
 
 **Database:** Mongo DB
 
+**node:** nvm use 16 for both backend and frontend repositories

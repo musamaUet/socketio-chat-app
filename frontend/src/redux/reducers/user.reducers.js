@@ -6,7 +6,7 @@ const initialUserState = {
 	userProfile: {},
 };
 
-const userReducer = (state = initialUserState, action) => {
+export const userReducer = (state = initialUserState, action) => {
 	return produce(state, (draft) => {
 		switch (action.type) {
 			case SET_USER_INFO:
@@ -21,5 +21,3 @@ const userReducer = (state = initialUserState, action) => {
 		}
 	});
 };
-
-export default userReducer;

@@ -3,7 +3,7 @@ import { connectRouter } from 'connected-react-router';
 import { combineReducers } from 'redux';
 
 import history from '../../utils/history';
-import { userReducer } from './user.reducers';
+import userReducer from './user.reducers';
 
 export default function createReducer() {
 	const rootReducer = combineReducers({

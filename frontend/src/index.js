@@ -12,10 +12,11 @@ import store from './redux/store';
 import './Interceptor';
 
 enableES5();
+const configStore = store();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-	<Provider store={store}>
+	<Provider store={configStore}>
 		<ChakraProvider>
 			<BrowserRouter>
 				<App />

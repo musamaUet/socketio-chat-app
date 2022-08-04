@@ -1,23 +1,35 @@
 import produce from 'immer';
 
-import { SET_USER_INFO } from '../types';
+import { NEW_USER_INFO, NEW_USER_INFO_ERROR, SET_USER_INFO } from '../types';
 
 const initialUserState = {
-	userProfile: {},
+	data: {
+		userProfile: {},
+		fakeData: [],
+	},
+	loading: {},
+	errors: {
+		fakeDataError: '',
+	},
 };
 
-export const userReducer = (state = initialUserState, action) => {
+function userReducer(state = initialUserState, action) {
 	return produce(state, (draft) => {
 		switch (action.type) {
 			case SET_USER_INFO:
-				console.log(
-					'Get_USER_INFO action dispatched and inside reducer',
-					JSON.parse(action.payload)
-				);
-				draft.userProfile = JSON.parse(action.payload);
+				draft.data.userProfile = action.payload;
+				break;
+			case NEW_USER_INFO:
+				draft.data.fakeData = action.data;
+				console.log('draft.data.fakeData', draft.data.fakeData);
+				break;
+			case NEW_USER_INFO_ERROR:
+				draft.errors.fakeDataError = action.errors;
 				break;
 			default:
-				return null;
+				return state;
 		}
 	});
-};
+}
+
+export { userReducer };

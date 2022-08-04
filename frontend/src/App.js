@@ -12,7 +12,7 @@ const App = () => {
 	useEffect(() => {
 		const user = localStorage.getItem('userInfo');
 		if (user) {
-			dispatch(setUserInfo(user));
+			dispatch(setUserInfo(JSON.parse(user)));
 		}
 	}, []);
 

@@ -21,7 +21,6 @@ function userReducer(state = initialUserState, action) {
 				break;
 			case NEW_USER_INFO:
 				draft.data.fakeData = action.data;
-				console.log('draft.data.fakeData', draft.data.fakeData);
 				break;
 			case NEW_USER_INFO_ERROR:
 				draft.errors.fakeDataError = action.errors;

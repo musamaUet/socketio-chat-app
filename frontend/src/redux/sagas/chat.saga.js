@@ -10,13 +10,11 @@ const callFakeApi = async () => {
 function* generatorFun() {
 	try {
 		const apiResult = yield call(callFakeApi);
-		console.log('apiResult', apiResult);
 		yield put({
 			type: NEW_USER_INFO,
 			data: apiResult.data,
 		});
 	} catch (err) {
-		console.log('api error', err);
 		yield put({
 			type: NEW_USER_INFO_ERROR,
 			errors: err,
@@ -25,6 +23,5 @@ function* generatorFun() {
 }
 
 export function* createChatWatcher() {
-	console.log('createChatWatcher called');
 	yield takeEvery(SET_USER_INFO, generatorFun);
 }

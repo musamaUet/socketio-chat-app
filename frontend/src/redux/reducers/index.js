@@ -4,11 +4,13 @@ import { combineReducers } from 'redux';
 
 import history from '../../utils/history';
 import { userReducer } from './user.reducers';
+import { chatReducer } from './chat.reducers';
 
 export default function createReducer() {
 	const rootReducer = combineReducers({
 		router: connectRouter(history),
 		user: userReducer,
+		chat: chatReducer,
 	});
 
 	return rootReducer;

@@ -17,6 +17,7 @@
 	},
 	"homepage": "https://github.com/musamarabbani/sockio-mern-app#readme",
 	"dependencies": {
+		"@chakra-ui/hooks": "^2.0.9",
 		"bcryptjs": "^2.4.3",
 		"colors": "^1.4.0",
 		"cors": "^2.8.5",

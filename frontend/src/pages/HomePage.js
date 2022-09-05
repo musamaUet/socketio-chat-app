@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import Login from '../components/Authentication/Login';
 import SignUp from '../components/Authentication/SignUp';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
 	return (

@@ -1,30 +1,29 @@
-import axios from 'axios';
-import { call, put, takeEvery } from 'redux-saga/effects';
-import { SET_USER_INFO, NEW_USER_INFO, NEW_USER_INFO_ERROR } from '../types';
+import { call, put, takeEvery, select } from 'redux-saga/effects';
+import {
+	GET_USER_CHATS_REQUEST,
+	GET_USER_CHATS_SUCCESSS,
+	GET_USER_CHATS_FAILURE,
+} from '../types';
+import * as api from '../../services/chats.service';
 
-const callFakeApi = async () => {
-	const result = await axios.get('https://jsonplaceholder.typicode.com/todos/');
-	return result;
-};
-
-function* generatorFun() {
+function* getUserChats(action) {
 	try {
-		const apiResult = yield call(callFakeApi);
-		console.log('apiResult', apiResult);
+		const userState = yield select((state) => state.user.userProfile);
+		const result = yield call(api.getUserChats, action, userState.token);
+
 		yield put({
-			type: NEW_USER_INFO,
-			data: apiResult.data,
+			type: GET_USER_CHATS_SUCCESSS,
+			data: result,
 		});
-	} catch (err) {
-		console.log('api error', err);
+	} catch (e) {
+		console.log('e', e);
 		yield put({
-			type: NEW_USER_INFO_ERROR,
-			errors: err,
+			type: GET_USER_CHATS_FAILURE,
+			e: e.response,
 		});
 	}
 }
 
-export function* createChatWatcher() {
-	console.log('createChatWatcher called');
-	yield takeEvery(SET_USER_INFO, generatorFun);
+export function* getUserChatsWatcher() {
+	yield takeEvery(GET_USER_CHATS_REQUEST, getUserChats);
 }

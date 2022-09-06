@@ -28,6 +28,7 @@ import ChatLoading from '../ChatLoading';
 import UserListItem from '../useAvatar/UserListItem';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUserChats } from '../../redux/actions/chats.action';
+import { isEmpty } from 'lodash';
 
 const SideDrawer = () => {
 	const navigate = useNavigate();
@@ -36,11 +37,16 @@ const SideDrawer = () => {
 	const { customToast } = useCustomToast();
 
 	const user = useSelector((state) => state.user.userProfile);
+	const {
+		data: chatData,
+		loading: loadingChat,
+		errors: chatError,
+	} = useSelector((state) => state.chat);
 
 	const [search, setSearch] = useState('');
 	const [searchResult, setSearchResult] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [loadingChat, setLoadingChat] = useState(false);
+	// const [loadingChat, setLoadingChat] = useState(false);
 
 	const logoutHandler = () => {
 		localStorage.removeItem('user');
@@ -77,7 +83,20 @@ const SideDrawer = () => {
 
 	const accessChat = async (userId) => {
 		dispatch(getUserChats(userId));
+		// I think there is no need to us in this case.
+		// if (!chatData.userChats.find((c) => c._id === data._id))
+		// 	setChats([data, ...chats]);
+		onClose();
 	};
+	useEffect(() => {
+		if (!isEmpty(chatError.getUserChat)) {
+			customToast({
+				title: 'Please enter something in search',
+				status: 'error',
+				position: 'bottom-left',
+			});
+		}
+	}, [chatError]);
 	return (
 		<>
 			<Box
@@ -151,7 +170,7 @@ const SideDrawer = () => {
 								/>
 							))
 						)}
-						{loadingChat && <Spinner ml='auto' display='flex' />}
+						{loadingChat.getUserChat && <Spinner ml='auto' display='flex' />}
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>

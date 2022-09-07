@@ -41,7 +41,7 @@ const SideDrawer = () => {
 		data: chatData,
 		loading: loadingChat,
 		errors: chatError,
-	} = useSelector((state) => state.chat);
+	} = useSelector((state) => state.chats);
 
 	const [search, setSearch] = useState('');
 	const [searchResult, setSearchResult] = useState([]);
@@ -83,7 +83,7 @@ const SideDrawer = () => {
 
 	const accessChat = async (userId) => {
 		dispatch(getUserChats(userId));
-		// I think there is no need to us in this case.
+		// If the user is already in the list, then we will append this chat into already fetched chatList, otherwise, we can also make a fresh api call.
 		// if (!chatData.userChats.find((c) => c._id === data._id))
 		// 	setChats([data, ...chats]);
 		onClose();
@@ -111,7 +111,7 @@ const SideDrawer = () => {
 				<Tooltip label='Search Users to chat' hasArrow placement='bottom-end'>
 					<Button variant='ghost' onClick={onOpen}>
 						<SearchIcon fontSize='1xl' />
-						<Text d={{ base: 'none', md: 'flex' }} px='4'>
+						<Text display={{ base: 'none', md: 'flex' }} px='4'>
 							Search User
 						</Text>
 					</Button>

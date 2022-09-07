@@ -10,7 +10,7 @@ export default function createReducer() {
 	const rootReducer = combineReducers({
 		router: connectRouter(history),
 		user: userReducer,
-		chat: chatReducer,
+		chats: chatReducer,
 	});
 
 	return rootReducer;

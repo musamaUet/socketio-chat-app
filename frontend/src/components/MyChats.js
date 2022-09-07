@@ -1,14 +1,20 @@
 import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getChats } from '../../redux/actions/chats.action';
+import { getChats } from '../redux/actions/chats.action';
 import { useCustomToast } from '../hooks/showToast';
 import { Box } from '@chakra-ui/react';
 
 const MyChats = () => {
 	const dispatch = useDispatch();
 
-	const { loading, errors, data } = useSelector((state) => state.chats);
+	const { customToast } = useCustomToast();
+
+	const { loading, errors, data: chatData } = useSelector(
+		(state) => state.chats
+	);
+
+	const [loggedUser, setLoggedUser] = useState();
 
 	useEffect(() => {
 		if (!isEmpty(errors.chats)) {
@@ -22,14 +28,15 @@ const MyChats = () => {
 	}, [errors]);
 
 	useEffect(() => {
-		useDispatch(fetchChats());
-	}, []);
-	const fetchChats = () => {
 		dispatch(getChats());
-	};
+	}, []);
+	console.log('chatData.userChats', chatData.userChats);
 	return (
 		<Box
-			d={{ base: selectedChat ? 'flex' : 'none', md: 'flex' }}
+			display={{
+				base: chatData.userChats.length > 0 ? 'none' : 'flex',
+				md: 'flex',
+			}}
 			alignItems='center'
 			flexDir='column'
 			p={3}
@@ -43,7 +50,7 @@ const MyChats = () => {
 				px='3'
 				fontSize={{ base: '28px', md: '30px' }}
 				fontFamily='Work sans'
-				d='flex'
+				display='flex'
 				justifyContent='space-between'
 				alignItems='center'
 			>

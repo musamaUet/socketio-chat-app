@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@chakra-ui/layout';
 import { useState } from 'react';
-import ChatBox from '../components/miscellaneous/ChatBox';
+import ChatBox from '../components/ChatBox';
 import MyChats from '../components/MyChats';
 import SideDrawer from '../components/miscellaneous/SideDrawer';
 import { useSelector } from 'react-redux';

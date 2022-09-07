@@ -32,7 +32,7 @@ function chatReducer(state = initialChatState, action) {
 		switch (action.type) {
 			case GET_USER_CHATS_REQUEST:
 				draft.loading.getUserChat = true;
-				draft.errors.getUserChat = action.e;
+				draft.errors.getUserChat = {};
 				break;
 			case GET_USER_CHATS_SUCCESS:
 				draft.data.userChats = action.data;
@@ -40,12 +40,13 @@ function chatReducer(state = initialChatState, action) {
 				draft.errors.getUserChat = {};
 				break;
 			case GET_USER_CHATS_FAILURE:
+				debugger;
 				draft.errors = action.errors;
 				draft.loading.getUserChat = false;
 				break;
 			case GET_CHATS_REQUEST:
 				draft.loading.chats = true;
-				draft.errors.chats = action.e;
+				draft.errors.chats = {};
 				break;
 			case GET_CHATS_SUCCESS:
 				draft.data.chats = action.data;
@@ -53,7 +54,7 @@ function chatReducer(state = initialChatState, action) {
 				draft.errors.chats = {};
 				break;
 			case GET_CHATS_FAILURE:
-				draft.errors = action.errors;
+				draft.errors = action.e;
 				draft.loading.chats = false;
 				break;
 

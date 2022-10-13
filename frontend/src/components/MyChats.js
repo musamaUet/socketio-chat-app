@@ -16,8 +16,8 @@ const MyChats = () => {
 	const { loading, errors, data: chatData } = useSelector(
 		(state) => state.chats
 	);
+	const { userProfile: loggedUser } = useSelector((state) => state.user);
 
-	const [loggedUser, setLoggedUser] = useState();
 	useEffect(() => {
 		if (!isEmpty(errors.chats)) {
 			customToast({

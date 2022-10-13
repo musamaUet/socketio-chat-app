@@ -1,4 +1,8 @@
-import { GET_CHATS_REQUEST, GET_USER_CHATS_REQUEST } from '../types';
+import {
+	GET_CHATS_REQUEST,
+	GET_USER_CHATS_REQUEST,
+	SET_SELECTED_CHAT,
+} from '../types';
 
 export const getUserChats = (userId) => {
 	return {
@@ -9,4 +13,11 @@ export const getUserChats = (userId) => {
 
 export const getChats = () => {
 	return { type: GET_CHATS_REQUEST };
+};
+
+export const setSelectedChat = (chatData) => {
+	return {
+		type: SET_SELECTED_CHAT,
+		data: chatData,
+	};
 };

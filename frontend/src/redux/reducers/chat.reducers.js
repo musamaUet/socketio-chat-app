@@ -10,12 +10,14 @@ import {
 	NEW_USER_INFO,
 	NEW_USER_INFO_ERROR,
 	SET_USER_INFO,
+	SET_SELECTED_CHAT,
 } from '../types';
 
 const initialChatState = {
 	data: {
 		userChats: [],
 		chats: [],
+		selectedChat: {},
 	},
 	loading: {
 		getUserChat: false,
@@ -40,7 +42,6 @@ function chatReducer(state = initialChatState, action) {
 				draft.errors.getUserChat = {};
 				break;
 			case GET_USER_CHATS_FAILURE:
-				debugger;
 				draft.errors = action.errors;
 				draft.loading.getUserChat = false;
 				break;
@@ -58,6 +59,8 @@ function chatReducer(state = initialChatState, action) {
 				draft.loading.chats = false;
 				break;
 
+			case SET_SELECTED_CHAT:
+				draft.data.selectedChat = action.data;
 			default:
 				return state;
 		}

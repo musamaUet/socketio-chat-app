@@ -5,7 +5,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { enableES5 } from 'immer';
 import { Provider } from 'react-redux';
 import reportWebVitals from './reportWebVitals';
-
+import Interceptors from './interceptors/axiosInterceptors';
 import App from './App';
 import store from './redux/store';
 

@@ -1,11 +1,12 @@
 import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getChats } from '../redux/actions/chats.action';
+import { getChats, setSelectedChat } from '../redux/actions/chats.action';
 import { useCustomToast } from '../hooks/showToast';
-import { Box, Button, Stack } from '@chakra-ui/react';
+import { Box, Button, Stack, Text } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import ChatLoading from './ChatLoading';
+import { getSender } from '../config/ChatLogics';
 
 const MyChats = () => {
 	const dispatch = useDispatch();
@@ -17,7 +18,6 @@ const MyChats = () => {
 	);
 
 	const [loggedUser, setLoggedUser] = useState();
-
 	useEffect(() => {
 		if (!isEmpty(errors.chats)) {
 			customToast({
@@ -43,7 +43,7 @@ const MyChats = () => {
 			flexDir='column'
 			p={3}
 			bg='white'
-			w={{ base: '100%', md: '68%', lg: '50%' }}
+			w={{ base: '100%', md: '35%', lg: '40%' }}
 			borderRadius='lg'
 			borderWidth='1px'
 		>
@@ -75,7 +75,30 @@ const MyChats = () => {
 				borderRadius='lg'
 				overflowY='hidden'
 			>
-				{chatData.chats ? <Stack></Stack> : <ChatLoading />}
+				{chatData.chats ? (
+					<Stack overflowY='scroll'>
+						{chatData.chats.map((chat) => (
+							<Box
+								onClick={() => dispatch(setSelectedChat(chat))}
+								cursor='pointer'
+								bg={chatData.selectedChat === chat ? '#38B2AC' : '#E8E8E8'}
+								color={chatData.selectedChat === chat ? '#FFFFFF' : '#000000'}
+								px='3'
+								py='2'
+								borderRadius='lg'
+								key={chat._id}
+							>
+								<Text>
+									{!chat.isGroupChat
+										? getSender(loggedUser, chat.users)
+										: chat.chatName}
+								</Text>
+							</Box>
+						))}
+					</Stack>
+				) : (
+					<ChatLoading />
+				)}
 			</Box>
 		</Box>
 	);

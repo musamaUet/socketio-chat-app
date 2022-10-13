@@ -11,8 +11,8 @@ import * as api from '../../services/chats.service';
 
 function* getUserChats(action) {
 	try {
-		const userState = yield select((state) => state.user.userProfile);
-		const result = yield call(api.getUserChats, action, userState.token);
+		// const userState = yield select((state) => state.user.userProfile);
+		const result = yield call(api.getUserChats, action);
 
 		yield put({
 			type: GET_USER_CHATS_SUCCESS,
@@ -30,8 +30,7 @@ function* getUserChats(action) {
 function* getChats(action) {
 	try {
 		const userState = yield select((state) => state.user.userProfile);
-		const result = yield call(api.getChats, userState.token);
-
+		const result = yield call(api.getChats);
 		yield put({
 			type: GET_CHATS_SUCCESS,
 			data: result,

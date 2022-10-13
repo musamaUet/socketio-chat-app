@@ -29,7 +29,7 @@ function* getUserChats(action) {
 
 function* getChats(action) {
 	try {
-		const userState = yield select((state) => state.user.userProfile);
+		// const userState = yield select((state) => state.user.userProfile);
 		const result = yield call(api.getChats);
 		yield put({
 			type: GET_CHATS_SUCCESS,

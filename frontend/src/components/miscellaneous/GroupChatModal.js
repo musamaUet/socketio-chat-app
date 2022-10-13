@@ -19,8 +19,10 @@ import axios from 'axios';
 import { useCustomToast } from '../../hooks/showToast';
 import UserListItem from '../UserAvatar/UserListItem';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
+import { getChats } from '../../redux/actions/chats.action';
 
 const GroupChatModal = ({ children }) => {
+	const dispatch = useDispatch();
 	const { customToast } = useCustomToast();
 	const { data: chatData } = useSelector((state) => state.chats);
 
@@ -60,8 +62,40 @@ const GroupChatModal = ({ children }) => {
 		}
 		setSelectedUsers([...selectedUsers, userToAdd]);
 	};
-	const handleDelete = () => {};
-	const handleSubmit = async () => {};
+	const handleDelete = (userToDelete) => {
+		setSelectedUsers(
+			selectedUsers.filter((user) => user._id !== userToDelete._id)
+		);
+	};
+	const handleSubmit = async () => {
+		if (!groupChatName || !selectedUsers) {
+			customToast({
+				title: 'Please fill all the fields',
+				status: 'warning',
+			});
+			return;
+		}
+		try {
+			const payload = {
+				name: groupChatName,
+				users: JSON.stringify(selectedUsers.map((user) => user._id)),
+			};
+			const { data } = axios.post('/api/chat/group', payload);
+			// setChats([data, ...chatData.chats]);
+			dispatch(getChats());
+			onClose();
+			customToast({
+				title: 'New group chat created!',
+				status: 'success',
+				position: 'bottom',
+			});
+		} catch (error) {
+			customToast({
+				title: 'Please fill all the fields',
+				status: 'warning',
+			});
+		}
+	};
 	return (
 		<>
 			<span onClick={onOpen}>{children}</span>
@@ -118,10 +152,7 @@ const GroupChatModal = ({ children }) => {
 					</ModalBody>
 
 					<ModalFooter>
-						<Button
-							colorScheme='blue'
-							onClick={(e) => handleSubmit(e.target.value)}
-						>
+						<Button colorScheme='blue' onClick={() => handleSubmit()}>
 							Create Chat
 						</Button>
 					</ModalFooter>

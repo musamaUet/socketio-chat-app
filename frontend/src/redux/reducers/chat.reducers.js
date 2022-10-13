@@ -61,6 +61,7 @@ function chatReducer(state = initialChatState, action) {
 
 			case SET_SELECTED_CHAT:
 				draft.data.selectedChat = action.data;
+				break;
 			default:
 				return state;
 		}

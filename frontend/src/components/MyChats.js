@@ -9,7 +9,7 @@ import ChatLoading from './ChatLoading';
 import { getSender } from '../config/ChatLogics';
 import GroupChatModal from './miscellaneous/GroupChatModal';
 
-const MyChats = () => {
+const MyChats = ({ fetchAgain }) => {
 	const dispatch = useDispatch();
 
 	const { customToast } = useCustomToast();
@@ -32,7 +32,7 @@ const MyChats = () => {
 
 	useEffect(() => {
 		dispatch(getChats());
-	}, []);
+	}, [fetchAgain]);
 	return (
 		<Box
 			display={{

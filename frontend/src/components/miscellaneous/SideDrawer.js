@@ -25,7 +25,7 @@ import { useDisclosure } from '@chakra-ui/hooks';
 import { useCustomToast } from '../../hooks/showToast';
 import axios from 'axios';
 import ChatLoading from '../ChatLoading';
-import UserListItem from '../useAvatar/UserListItem';
+import UserListItem from '../UserAvatar/UserListItem';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUserChats } from '../../redux/actions/chats.action';
 import { isEmpty } from 'lodash';

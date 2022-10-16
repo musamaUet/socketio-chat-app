@@ -4,6 +4,8 @@ const colors = require('colors');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 const connectDB = require('./config/db');
 
@@ -17,6 +19,7 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/message', messageRoutes);
 app.use(notFound);
 app.use(errorHandler);
 

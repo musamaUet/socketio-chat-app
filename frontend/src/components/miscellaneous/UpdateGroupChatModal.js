@@ -60,7 +60,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
 			user._id === loggedUser._id ? setSelectedChat() : setSelectedChat(data);
 			setFetchAgain(!fetchAgain);
-			// fetchMessages();
+			fetchMessages();
 			setLoading(false);
 		} catch (error) {
 			customToast({

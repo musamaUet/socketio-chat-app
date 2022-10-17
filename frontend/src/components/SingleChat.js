@@ -20,6 +20,9 @@ import ProfileModal from './miscellaneous/ProfileModal';
 import UpdateGroupChatModal from './miscellaneous/UpdateGroupChatModal';
 import axios from 'axios';
 import { useCustomToast } from '../hooks/showToast';
+import ScrollableChat from './ScrollableChat';
+
+import './styles.css';
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const dispatch = useDispatch();
@@ -29,7 +32,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const { selectedChat } = chatData;
 	const { userProfile: loggedUser } = useSelector((state) => state.user);
 
-	const [messages, setMesssages] = useState([]);
+	const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [newMessage, setNewMessage] = useState('');
 
@@ -42,7 +45,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 				};
 				setNewMessage('');
 				const { data } = await axios.post('/api/message', payload);
-				setMesssages([...messages, data]);
+				setMessages([...messages, data]);
 			} catch (error) {
 				customToast({
 					title: 'Failed to send the message',
@@ -56,6 +59,27 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 		// Typing Indicator Logic
 	};
+	const fetchMessages = async () => {
+		console.log('isEmpty(selectedChat)', isEmpty(selectedChat));
+		if (isEmpty(selectedChat)) return;
+
+		try {
+			setLoading(true);
+			const { data } = await axios.get(`/api/message/${selectedChat._id}`);
+			setMessages(data);
+			setLoading(false);
+		} catch (error) {
+			customToast({
+				title: 'Failed to Load the Messages',
+				status: 'error',
+			});
+		}
+	};
+
+	useEffect(() => {
+		fetchMessages();
+	}, [selectedChat]);
+
 	return (
 		<>
 			{!isEmpty(selectedChat) ? (
@@ -86,6 +110,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 							<>
 								{selectedChat.chatName.toUpperCase()}
 								<UpdateGroupChatModal
+									fetchMessages={fetchMessages}
 									fetchAgain={fetchAgain}
 									setFetchAgain={setFetchAgain}
 								/>
@@ -103,7 +128,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 						borderRadius='lg'
 						overflow='hidden'
 					>
-						{/* <Messages/> */}
 						{loading ? (
 							<Spinner
 								size='xl'
@@ -113,7 +137,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 								alignSelf='center'
 							/>
 						) : (
-							<div></div>
+							<div className='messages'>
+								<ScrollableChat messages={messages} />
+							</div>
 						)}
 						<FormControl onKeyDown={sendMessage} isRequired mt={3}>
 							<Input

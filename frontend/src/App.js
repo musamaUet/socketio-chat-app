@@ -6,15 +6,16 @@ import { useDispatch } from 'react-redux';
 import { setUserInfo } from './redux/actions';
 
 import './App.css';
+import { isEmpty } from 'lodash';
 
 const App = () => {
 	let navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		const user = localStorage.getItem('userInfo');
-		if (user) {
-			dispatch(setUserInfo(JSON.parse(user)));
+		const user = JSON.parse(localStorage.getItem('userInfo'));
+		if (!isEmpty(user)) {
+			dispatch(setUserInfo(user));
 			navigate('/chats');
 		}
 	}, []);

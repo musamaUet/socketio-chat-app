@@ -21,8 +21,14 @@ import UpdateGroupChatModal from './miscellaneous/UpdateGroupChatModal';
 import axios from 'axios';
 import { useCustomToast } from '../hooks/showToast';
 import ScrollableChat from './ScrollableChat';
+import io from 'socket.io-client';
 
 import './styles.css';
+import { GET_LOGGEDIN_USER_INFO } from '../redux/types';
+import { getUserInfo } from '../redux/actions';
+
+const ENDPOINT = 'http://localhost:8000';
+var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const dispatch = useDispatch();
@@ -35,6 +41,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [newMessage, setNewMessage] = useState('');
+	const [socketConnected, setSocketConnected] = useState(false);
 
 	const sendMessage = async (event) => {
 		if (event.key === 'Enter' && newMessage) {
@@ -60,7 +67,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 		// Typing Indicator Logic
 	};
 	const fetchMessages = async () => {
-		console.log('isEmpty(selectedChat)', isEmpty(selectedChat));
 		if (isEmpty(selectedChat)) return;
 
 		try {
@@ -68,6 +74,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			const { data } = await axios.get(`/api/message/${selectedChat._id}`);
 			setMessages(data);
 			setLoading(false);
+			socket.emit('join-chat', selectedChat._id);
+
+			socket.emit('new-message', data);
 		} catch (error) {
 			customToast({
 				title: 'Failed to Load the Messages',
@@ -78,7 +87,23 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 	useEffect(() => {
 		fetchMessages();
+		selectedChatCompare = selectedChat;
 	}, [selectedChat]);
+
+	useEffect(() => {
+		let loggedUserInfo;
+		socket = io(ENDPOINT);
+		const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+		if (!isEmpty(userInfo)) {
+			dispatch(getUserInfo());
+			loggedUserInfo = userInfo;
+			socket.emit('setup', loggedUserInfo);
+
+			socket.on('connecttion', () => {
+				setSocketConnected(true);
+			});
+		}
+	}, []);
 
 	return (
 		<>

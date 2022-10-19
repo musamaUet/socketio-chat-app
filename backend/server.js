@@ -8,6 +8,7 @@ const messageRoutes = require('./routes/messageRoutes');
 
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 const connectDB = require('./config/db');
+const { Socket } = require('socket.io');
 
 dotenv.config();
 
@@ -41,7 +42,7 @@ io.on('connection', (socket) => {
 	console.log('connected to socket.io');
 	socket.on('setup', (userData) => {
 		socket.join(userData._id);
-		socket.emit('connecttion');
+		socket.emit('connection');
 	});
 
 	socket.on('join-chat', (room) => {
@@ -49,14 +50,22 @@ io.on('connection', (socket) => {
 		console.log('user joined room with chatId', room);
 	});
 
+	socket.on('typing', (room) => socket.in(room).emit('typing'));
+	socket.on('stop-typing', (room) => socket.in(room).emit('stop-typing'));
+
 	socket.on('new-message', (newMessageReceived) => {
+		console.log('new-message', newMessageReceived);
 		var chat = newMessageReceived.chat;
-		if (!chat.users) return console.log('chat.users not defined');
+		if (!chat.users) return;
 
 		chat.users.forEach((user) => {
-			if (user._id == newMessageReceived.sender._id) return;
-
-			socket.in(user._id).emit('message received');
+			if (user == newMessageReceived.sender._id) return;
+			console.log('not returned', user);
+			socket.in(user).emit('message-received', newMessageReceived);
 		});
+	});
+	socket.off('setup', () => {
+		console.log('USER DISCONNECTED!'.red.bold());
+		socket.leave(userData._id);
 	});
 });

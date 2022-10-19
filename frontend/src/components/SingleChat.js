@@ -22,10 +22,12 @@ import axios from 'axios';
 import { useCustomToast } from '../hooks/showToast';
 import ScrollableChat from './ScrollableChat';
 import io from 'socket.io-client';
-
-import './styles.css';
+import Lottie from 'react-lottie';
+import typingAnimation from '../assets/animations/typing.json';
 import { GET_LOGGEDIN_USER_INFO } from '../redux/types';
 import { getUserInfo } from '../redux/actions';
+
+import './styles.css';
 
 const ENDPOINT = 'http://localhost:8000';
 var socket, selectedChatCompare;
@@ -42,9 +44,27 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const [loading, setLoading] = useState(false);
 	const [newMessage, setNewMessage] = useState('');
 	const [socketConnected, setSocketConnected] = useState(false);
+	const [isTyping, setIsTyping] = useState(false);
+
+	useEffect(() => {
+		let loggedUserInfo;
+		socket = io(ENDPOINT);
+		const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+		if (!isEmpty(userInfo)) {
+			dispatch(getUserInfo());
+			loggedUserInfo = userInfo;
+			socket.emit('setup', loggedUserInfo);
+
+			socket.on('connection', () => setSocketConnected(true));
+			socket.on('typing', () => setIsTyping(true));
+			socket.on('stop-typing', () => setIsTyping(false));
+		}
+	}, []);
 
 	const sendMessage = async (event) => {
 		if (event.key === 'Enter' && newMessage) {
+			setIsTyping(false);
+			socket.emit('stop-typing', selectedChat._id);
 			try {
 				const payload = {
 					content: newMessage,
@@ -53,6 +73,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 				setNewMessage('');
 				const { data } = await axios.post('/api/message', payload);
 				setMessages([...messages, data]);
+				socket.emit('new-message', data);
 			} catch (error) {
 				customToast({
 					title: 'Failed to send the message',
@@ -64,7 +85,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const typingHandler = (event) => {
 		setNewMessage(event.target.value);
 
-		// Typing Indicator Logic
+		if (!socketConnected) return;
+
+		if (!isTyping) {
+			setIsTyping(true);
+			socket.emit('typing', selectedChat._id);
+		}
+
+		let lastTypingTime = new Date().getTime();
+		let timerLength = 3000;
+
+		setTimeout(() => {
+			let timeNow = new Date().getTime();
+			let timeDiff = timeNow - lastTypingTime;
+			if (timeDiff >= timerLength && isTyping) {
+				setIsTyping(false);
+				socket.emit('stop-typing', selectedChat._id);
+			}
+		}, timerLength);
 	};
 	const fetchMessages = async () => {
 		if (isEmpty(selectedChat)) return;
@@ -75,8 +113,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			setMessages(data);
 			setLoading(false);
 			socket.emit('join-chat', selectedChat._id);
-
-			socket.emit('new-message', data);
 		} catch (error) {
 			customToast({
 				title: 'Failed to Load the Messages',
@@ -91,19 +127,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	}, [selectedChat]);
 
 	useEffect(() => {
-		let loggedUserInfo;
-		socket = io(ENDPOINT);
-		const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-		if (!isEmpty(userInfo)) {
-			dispatch(getUserInfo());
-			loggedUserInfo = userInfo;
-			socket.emit('setup', loggedUserInfo);
-
-			socket.on('connecttion', () => {
-				setSocketConnected(true);
-			});
-		}
-	}, []);
+		socket.on('message-received', (newMessageReceived) => {
+			console.log('called');
+			if (
+				!selectedChatCompare ||
+				selectedChatCompare._id !== newMessageReceived.chat._id
+			) {
+			} else {
+				console.log('newMessageReceived', newMessageReceived);
+				setMessages([...messages, newMessageReceived]);
+			}
+		});
+	});
 
 	return (
 		<>
@@ -167,6 +202,26 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 							</div>
 						)}
 						<FormControl onKeyDown={sendMessage} isRequired mt={3}>
+							{isTyping ? (
+								<Lottie
+									style={{
+										marginBottom: 15,
+										marginLeft: 15,
+									}}
+									width={55}
+									height={25}
+									options={{
+										loop: true,
+										autoplay: true,
+										animationData: typingAnimation,
+										rendererSettings: {
+											preserveAspectRatio: 'xMidYMid slice',
+										},
+									}}
+								/>
+							) : (
+								<></>
+							)}
 							<Input
 								variant='filled'
 								bg='#E0E0E0'

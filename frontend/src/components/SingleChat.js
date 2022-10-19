@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-	getChats,
-	getUserChats,
+	setNotifications,
 	setSelectedChat,
 } from '../redux/actions/chats.action';
 import {
@@ -24,7 +23,6 @@ import ScrollableChat from './ScrollableChat';
 import io from 'socket.io-client';
 import Lottie from 'react-lottie';
 import typingAnimation from '../assets/animations/typing.json';
-import { GET_LOGGEDIN_USER_INFO } from '../redux/types';
 import { getUserInfo } from '../redux/actions';
 
 import './styles.css';
@@ -37,7 +35,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const { customToast } = useCustomToast();
 
 	const { data: chatData } = useSelector((state) => state.chats);
-	const { selectedChat } = chatData;
+	const { selectedChat, notifications } = chatData;
 	const { userProfile: loggedUser } = useSelector((state) => state.user);
 
 	const [messages, setMessages] = useState([]);
@@ -126,13 +124,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 		selectedChatCompare = selectedChat;
 	}, [selectedChat]);
 
+	console.log('notifications ==>', notifications);
 	useEffect(() => {
 		socket.on('message-received', (newMessageReceived) => {
-			console.log('called');
+			console.log('newMessageReceived Called!');
 			if (
 				!selectedChatCompare ||
 				selectedChatCompare._id !== newMessageReceived.chat._id
 			) {
+				if (!notifications.includes(newMessageReceived)) {
+					dispatch(setNotifications([newMessageReceived, ...notifications]));
+					setFetchAgain(!fetchAgain);
+				}
 			} else {
 				console.log('newMessageReceived', newMessageReceived);
 				setMessages([...messages, newMessageReceived]);

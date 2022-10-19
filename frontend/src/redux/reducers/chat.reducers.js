@@ -8,6 +8,7 @@ import {
 	GET_CHATS_SUCCESS,
 	GET_CHATS_FAILURE,
 	SET_SELECTED_CHAT,
+	SET_CHAT_NOTIFICATIONS,
 } from '../types';
 
 const initialChatState = {
@@ -15,6 +16,7 @@ const initialChatState = {
 		userChats: [],
 		chats: [],
 		selectedChat: {},
+		notifications: [],
 	},
 	loading: {
 		getUserChat: false,
@@ -55,7 +57,9 @@ function chatReducer(state = initialChatState, action) {
 				draft.errors = action.e;
 				draft.loading.chats = false;
 				break;
-
+			case SET_CHAT_NOTIFICATIONS:
+				draft.data.notifications = action.data;
+				break;
 			case SET_SELECTED_CHAT:
 				draft.data.selectedChat = action.data;
 				break;

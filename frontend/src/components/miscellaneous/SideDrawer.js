@@ -27,8 +27,15 @@ import axios from 'axios';
 import ChatLoading from '../ChatLoading';
 import UserListItem from '../UserAvatar/UserListItem';
 import { useSelector, useDispatch } from 'react-redux';
-import { getUserChats } from '../../redux/actions/chats.action';
+import {
+	getUserChats,
+	setNotifications,
+	setSelectedChat,
+} from '../../redux/actions/chats.action';
 import { isEmpty } from 'lodash';
+import { getSender } from '../../config/ChatLogics';
+import NotificationBadge from 'react-notification-badge';
+import { Effect } from 'react-notification-badge';
 
 const SideDrawer = () => {
 	const navigate = useNavigate();
@@ -42,6 +49,8 @@ const SideDrawer = () => {
 		loading: loadingChat,
 		errors: chatError,
 	} = useSelector((state) => state.chats);
+	const { userProfile: loggedUser } = useSelector((state) => state.user);
+	const { notifications } = chatData;
 
 	const [search, setSearch] = useState('');
 	const [searchResult, setSearchResult] = useState([]);
@@ -120,9 +129,35 @@ const SideDrawer = () => {
 				<div>
 					<Menu>
 						<MenuButton>
+							<NotificationBadge
+								count={notifications.length}
+								effect={Effect.SCALE}
+							/>
 							<BellIcon fontSize='2xl' m='1' />
 						</MenuButton>
-						{/* <MenuList /> */}
+						<MenuList textAlign='center'>
+							{isEmpty(notifications) && 'No New Messages'}
+							{notifications.map((notification) => (
+								<MenuItem
+									key={notification._id}
+									onClick={() => {
+										dispatch(setSelectedChat(notification.chat));
+										dispatch(
+											setNotifications(
+												notifications.filter((n) => n !== notification)
+											)
+										);
+									}}
+								>
+									{notification.chat.isGroupChat
+										? `New Message in ${notification.chat.chatName}`
+										: `New Message from ${getSender(
+												loggedUser,
+												notification.chat.users
+										  )}`}
+								</MenuItem>
+							))}
+						</MenuList>
 					</Menu>
 					<Menu>
 						<MenuButton as={Button} rightIcon={<ChevronDownIcon />}>

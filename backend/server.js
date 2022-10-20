@@ -8,7 +8,6 @@ const messageRoutes = require('./routes/messageRoutes');
 
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 const connectDB = require('./config/db');
-const { Socket } = require('socket.io');
 
 dotenv.config();
 
@@ -54,14 +53,13 @@ io.on('connection', (socket) => {
 	socket.on('stop-typing', (room) => socket.in(room).emit('stop-typing'));
 
 	socket.on('new-message', (newMessageReceived) => {
-		console.log('new-message', newMessageReceived);
 		var chat = newMessageReceived.chat;
 		if (!chat.users) return;
 
 		chat.users.forEach((user) => {
-			if (user == newMessageReceived.sender._id) return;
-			console.log('not returned', user);
-			socket.in(user).emit('message-received', newMessageReceived);
+			if (user._id == newMessageReceived.sender._id) return;
+			console.log('not returned', user._id);
+			socket.in(user._id).emit('message-received', newMessageReceived);
 		});
 	});
 	socket.off('setup', () => {
